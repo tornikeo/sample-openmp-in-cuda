@@ -1,0 +1,11 @@
+{
+    "C_Cpp.default.compilerPath": "/home/tornikeo/micromamba/envs/pb/bin/nvcc",
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+    "files.associations": {
+        "*.cu": "cpp",
+        "cstdlib": "c"
+    },
+    "mesonbuild.configureOnOpen": false,
+    "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
+    "C_Cpp.default.compileCommands": "/home/tornikeo/Documents/personal/notes/pmpp/src/04/starter/builddir/compile_commands.json"
+}

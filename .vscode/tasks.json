@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Builddir",
+            "type": "shell",
+            "command": "/home/tornikeo/micromamba/envs/pb/bin/meson",
+            "args": ["setup", "builddir"],
+        },
+        {
+            "label": "Build CUDA",
+            "type": "shell",
+            "dependsOn": ["Create Builddir"],
+            "command": "/home/tornikeo/micromamba/envs/pb/bin/meson",
+            "options": {
+                "cwd": "builddir"
+            },
+            "args": [
+                "compile",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$meson-gcc"]
+        }
+    ]
+}
