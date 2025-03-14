@@ -7,5 +7,5 @@
     },
     "mesonbuild.configureOnOpen": false,
     "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
-    "C_Cpp.default.compileCommands": "/home/tornikeo/Documents/personal/notes/pmpp/src/04/starter/builddir/compile_commands.json"
+    "C_Cpp.default.compileCommands": "/home/tornikeo/Documents/personal/other/mpi-gpu/builddir/compile_commands.json"
 }

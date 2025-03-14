@@ -6,11 +6,11 @@
             "name": "CUDA Debug",
             "type": "cppdbg",
             "request": "launch",
+            "environment": [{"OMP_NUM_THREADS":1}],
             "program": "${workspaceFolder}/builddir/main.exe",
             "cwd": "${workspaceFolder}/builddir",
             "args": [],
             "stopAtEntry": false,
-            "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [

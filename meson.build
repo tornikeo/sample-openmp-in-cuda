@@ -6,13 +6,16 @@
 project('cuda_project', 'cuda',
   default_options: [
     'cpp_std=c++17',
-    'cuda_ccbindir=/usr/bin/g++-11'
-    ],
+    'cuda_ccbindir=/usr/bin/g++-11',
+  ],
 )
+
+add_global_arguments('-Xcompiler=-fopenmp', language: 'cuda')
 
 cuda_compiler = meson.get_compiler('cuda')
 
 executable(
   'main.exe', 
   'main.cu',
+  link_args: '-fopenmp'
 )
