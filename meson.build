@@ -10,12 +10,13 @@ project('cuda_project', 'cuda',
   ],
 )
 
-add_global_arguments('-Xcompiler=-fopenmp', language: 'cuda')
+# add_global_arguments('', language: 'cuda')
 
 cuda_compiler = meson.get_compiler('cuda')
 
 executable(
   'main.exe', 
   'main.cu',
-  link_args: '-fopenmp'
+  link_args: '-fopenmp',
+  cuda_args: '-Xcompiler=-fopenmp',
 )

@@ -6,7 +6,7 @@
             "name": "CUDA Debug",
             "type": "cppdbg",
             "request": "launch",
-            "environment": [{"OMP_NUM_THREADS":1}],
+            "environment": [{"name":"OMP_NUM_THREADS", "value": "1"}],
             "program": "${workspaceFolder}/builddir/main.exe",
             "cwd": "${workspaceFolder}/builddir",
             "args": [],
