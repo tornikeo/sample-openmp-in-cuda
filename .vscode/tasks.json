@@ -28,7 +28,7 @@
       "args": [
         "setup",
         "builddir",
-        "--wipe", // make sure to rebuild from scratch
+        // "--wipe", // make sure to rebuild from scratch
       ],
     },
     {

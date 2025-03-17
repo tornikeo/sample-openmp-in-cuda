@@ -10,13 +10,14 @@ project('cuda_project', 'cuda',
   ],
 )
 
-# add_global_arguments('', language: 'cuda')
-
 cuda_compiler = meson.get_compiler('cuda')
+src = ['main.cu','utils.cu']
 
-executable(
-  'main.exe', 
-  'main.cu',
+exe = executable(
+  'main.bin', # Do not use exe here 
+  sources: src,
   link_args: '-fopenmp',
   cuda_args: '-Xcompiler=-fopenmp',
 )
+
+test('simple_run', exe)
