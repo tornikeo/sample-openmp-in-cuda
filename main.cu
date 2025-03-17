@@ -62,9 +62,7 @@ int main()
     std::vector<int> all_data(N * L); // Shared memory buffer for all threads
     std::vector<int> results(N, 0);   // Stores the reduced sums
 
-    int world = omp_get_num_threads();
     printf("Start\n");
-    printf("There are %i threads.\n", world);
 
     is_available();
 
@@ -72,6 +70,7 @@ int main()
 #pragma omp parallel num_threads(N)
     {
         int thread_id = omp_get_thread_num();
+        printf("Thread %i is working...\n", thread_id);
         int start_idx = thread_id * L;
         for (int i = 0; i < L; i++)
         {
@@ -109,25 +108,25 @@ int main()
     cudaFree(d_input);
     cudaFree(d_output);
     printf("We expect the kernel to sum the values in each row...\n");
-    
+
 // Step 7: Each thread verifies and prints the result
 #pragma omp parallel num_threads(N)
     {
 
 #pragma omp critical
         {
-                int thread_id = omp_get_thread_num();
-                int expected = thread_id * L;
-                if (results[thread_id] == expected)
-                {
-                    std::cout << "Thread " << thread_id << " verified sum: "
-                            << results[thread_id] << " ✅" << std::endl;
-                }
-                else
-                {
-                    std::cerr << "Thread " << thread_id << " ERROR! Expected "
-                            << expected << ", but got " << results[thread_id] << std::endl;
-                }
+            int thread_id = omp_get_thread_num();
+            int expected = thread_id * L;
+            if (results[thread_id] == expected)
+            {
+                std::cout << "Thread " << thread_id << " verified sum: "
+                        << results[thread_id] << " ✅" << std::endl;
+            }
+            else
+            {
+                std::cerr << "Thread " << thread_id << " ERROR! Expected "
+                        << expected << ", but got " << results[thread_id] << std::endl;
+            }
         }
     }
     return 0;
