@@ -8,27 +8,24 @@
 #include <numeric> // std::accumulate
 #include "utils.h"
 
-#define N 4    // Number of threads (equivalent to MPI processes)
-#define L 1024 // Length of each array
+#define N 8    // Number of threads (equivalent to MPI processes)
+#define L 32 // Length of each array
 
 // CUDA Kernel: Sums each L-sized array into an N-sized result
 __global__ void sumKernel(int *d_input, int *d_output)
 {
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
-    // if (idx < N)
-    // {
-    //     int sum = 0;
-    //     for (int i = 0; i < L; i++)
-    //     {
-    //         sum += d_input[idx * L + i];
-    //     }
+    if (idx < N)
+    {
+        int sum = 0;
+        for (int i = 0; i < L; i++)
+        {
+            sum += d_input[idx * L + i];
+        }
 
-    //     if (threadIdx.x == 0){
-    //         printf("Kernel %i iterlim %i", sum, L);
-    //     }
-    //     d_output[idx] = sum;
-    // }
-    printf("%i Hello from kernel!", idx);
+        d_output[idx] = sum;
+    }
+    // printf("%i Hello from kernel!", idx);
 }
 
 void printVector(const std::vector<int> &vec, size_t max_display = 50)
@@ -64,6 +61,7 @@ int main()
 {
     std::vector<int> all_data(N * L); // Shared memory buffer for all threads
     std::vector<int> results(N, 0);   // Stores the reduced sums
+
     int world = omp_get_num_threads();
     printf("Start\n");
     printf("There are %i threads.\n", world);
@@ -81,8 +79,15 @@ int main()
         }
     }
 
-    // printVector(all_data);
-    // printVector(results);
+    printf("Numbers going into GPU:\n");
+    for (size_t i = 0; i < N; i++)
+    {
+        for (size_t j = 0; j < L; j++)
+        {
+            printf("%i ", all_data[i*L + j]);
+        }
+        printf("\n");
+    }
 
     // Step 2: Allocate GPU Memory
     int *d_input, *d_output;
@@ -93,6 +98,7 @@ int main()
     cudaMemcpy(d_input, all_data.data(), N * L * sizeof(int), cudaMemcpyHostToDevice);
 
     // Step 4: Launch Kernel (1 block, N threads)
+    printf("Launching GPU...\n");
     sumKernel<<<1, N>>>(d_input, d_output);
     cudaDeviceSynchronize();
 
@@ -102,26 +108,27 @@ int main()
     // Step 6: Free GPU memory
     cudaFree(d_input);
     cudaFree(d_output);
-
+    printf("We expect the kernel to sum the values in each row...\n");
+    
 // Step 7: Each thread verifies and prints the result
-// #pragma omp parallel num_threads(N)
-//     {
+#pragma omp parallel num_threads(N)
+    {
 
-// #pragma omp critical
-//     {
-//             int thread_id = omp_get_thread_num();
-//             int expected = thread_id * L;
-//             if (results[thread_id] == expected)
-//             {
-//                 std::cout << "Thread " << thread_id << " verified sum: "
-//                         << results[thread_id] << " ✅" << std::endl;
-//             }
-//             else
-//             {
-//                 std::cerr << "Thread " << thread_id << " ERROR! Expected "
-//                         << expected << ", but got " << results[thread_id] << std::endl;
-//             }
-//         }
-//     }
+#pragma omp critical
+        {
+                int thread_id = omp_get_thread_num();
+                int expected = thread_id * L;
+                if (results[thread_id] == expected)
+                {
+                    std::cout << "Thread " << thread_id << " verified sum: "
+                            << results[thread_id] << " ✅" << std::endl;
+                }
+                else
+                {
+                    std::cerr << "Thread " << thread_id << " ERROR! Expected "
+                            << expected << ", but got " << results[thread_id] << std::endl;
+                }
+        }
+    }
     return 0;
 }
